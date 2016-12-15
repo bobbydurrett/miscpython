@@ -78,3 +78,33 @@ def search(f,lo,hi,target):
  # Should not be able to get here.
    
     assert False
+
+# Run test if module run standalone
+
+if __name__ == "__main__":
+
+    import math
+    
+    # simple test function meant to be 
+    # passed into search.  Divides
+    # by 10.0
+    
+    def test(x):
+        return x/10.0
+        
+    # Find the value of x for which test(x)
+    # returns 6.0
+    # Should return 60.0 since test
+    # just divides by 10.0
+        
+    print search(test,0.0,100.0,6.0)
+    
+    print iterations
+    
+    print search(math.sqrt,0.0,100.0,6.0)
+    
+    print search(math.exp,0.0,100.0,6.0)
+    
+    round_digits = 8
+    
+    print search(math.log,0.1,1000.0,6.0)
