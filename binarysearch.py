@@ -35,10 +35,10 @@ def search(getkey,getvalue,sortedlist,targetkey):
         return None   
     
     while hi > (lo+1):
-        mid = (lo+hi)/2
- #       print "lo="+str(lo)
- #       print "hi="+str(hi)
- #       print "mid="+str(mid)
+        mid = int((lo+hi)/2)
+ #       print("lo="+str(lo))
+ #       print("hi="+str(hi))
+ #       print("mid="+str(mid))
         
         assert getkey(sortedlist[mid]) >= getkey(sortedlist[lo])
         assert getkey(sortedlist[mid]) <= getkey(sortedlist[hi])
@@ -69,48 +69,48 @@ if __name__ == "__main__":
     def getvalue(item):
         return(item[1])
     
-    print
-    print "empty list"
+    print()
+    print("empty list")
     
-    print search(getkey,getvalue,[],1)
+    print(search(getkey,getvalue,[],1))
     
-    print
-    print "one element list"
+    print()
+    print("one element list")
                 
-    print search(getkey,getvalue,[[1,1]],0)
-    print search(getkey,getvalue,[[1,1]],1)
-    print search(getkey,getvalue,[[1,1]],2)
+    print(search(getkey,getvalue,[[1,1]],0))
+    print(search(getkey,getvalue,[[1,1]],1))
+    print(search(getkey,getvalue,[[1,1]],2))
     
-    print
-    print "two element list"
+    print()
+    print("two element list")
     
-    print search(getkey,getvalue,[[1,1],[2,2]],0)
-    print search(getkey,getvalue,[[1,1],[2,2]],1)
-    print search(getkey,getvalue,[[1,1],[2,2]],1.5)
-    print search(getkey,getvalue,[[1,1],[2,2]],2)
-    print search(getkey,getvalue,[[1,1],[2,2]],3)
+    print(search(getkey,getvalue,[[1,1],[2,2]],0))
+    print(search(getkey,getvalue,[[1,1],[2,2]],1))
+    print(search(getkey,getvalue,[[1,1],[2,2]],1.5))
+    print(search(getkey,getvalue,[[1,1],[2,2]],2))
+    print(search(getkey,getvalue,[[1,1],[2,2]],3))
     
-    print
-    print "three element list"
+    print()
+    print("three element list")
     
-    print search(getkey,getvalue,[[1,1],[2,2],[3,3]],0)
-    print search(getkey,getvalue,[[1,1],[2,2],[3,3]],1)
-    print search(getkey,getvalue,[[1,1],[2,2],[3,3]],1.5)
-    print search(getkey,getvalue,[[1,1],[2,2],[3,3]],2)
-    print search(getkey,getvalue,[[1,1],[2,2],[3,3]],2.5)
-    print search(getkey,getvalue,[[1,1],[2,2],[3,3]],3)
-    print search(getkey,getvalue,[[1,1],[2,2],[3,3]],4)
+    print(search(getkey,getvalue,[[1,1],[2,2],[3,3]],0))
+    print(search(getkey,getvalue,[[1,1],[2,2],[3,3]],1))
+    print(search(getkey,getvalue,[[1,1],[2,2],[3,3]],1.5))
+    print(search(getkey,getvalue,[[1,1],[2,2],[3,3]],2))
+    print(search(getkey,getvalue,[[1,1],[2,2],[3,3]],2.5))
+    print(search(getkey,getvalue,[[1,1],[2,2],[3,3]],3))
+    print(search(getkey,getvalue,[[1,1],[2,2],[3,3]],4))
     
-    print
-    print "million element list"
+    print()
+    print("million element list")
     
     l=[]
     
     for i in range(1000000):
        l.append([i,i])
        
-    print "length of l = "+str(len(l))
+    print("length of l = "+str(len(l)))
        
-    print search(getkey,getvalue,l,-456436)
-    print search(getkey,getvalue,l,456436)
-    print search(getkey,getvalue,l,1456436)
+    print(search(getkey,getvalue,l,-456436))
+    print(search(getkey,getvalue,l,456436))
+    print(search(getkey,getvalue,l,1456436))

@@ -97,14 +97,15 @@ if __name__ == "__main__":
     # Should return 60.0 since test
     # just divides by 10.0
         
-    print search(test,0.0,100.0,6.0)
+    print(search(test,0.0,100.0,6.0))
     
-    print iterations
+    print(iterations)
     
-    print search(math.sqrt,0.0,100.0,6.0)
+    print(search(math.sqrt,0.0,100.0,6.0))
     
-    print search(math.exp,0.0,100.0,6.0)
+    print(search(math.exp,0.0,100.0,6.0))
     
     round_digits = 8
     
-    print search(math.log,0.1,1000.0,6.0)
+    print(search(math.log,0.1,1000.0,6.0))
+    
