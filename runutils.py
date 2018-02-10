@@ -12,13 +12,24 @@ def onearg():
     """
 
     Returns the command line arguments as a single string.
+    
+    i.e. python test.py one two three
+    
+    returns the string "one two three"
+    
+    Assumes that there is no more than one space between arguments.
+    
+    Kind of a kluge to get the command line arguments as a string.
 
     """
+    
+    if len(sys.argv) < 2:
+        return ""
 
-    onearg = ""
+    onearg = sys.argv[1]
 
-    for e in sys.argv[1:]:
-        onearg += e
+    for word in sys.argv[2:]:
+        onearg += " " + word
         
     return onearg
     
