@@ -13,4 +13,6 @@ bisection.py - Searches a range of values for one that causes a function
                to produce a certain result. Uses bisection.
                https://en.wikipedia.org/wiki/Bisection_method
                
+Utility functions:
 
+runutils.py - Two simple functions that I might use to run scripts or programs
