@@ -3,36 +3,10 @@ import subprocess
 
 """
 
-A couple of functions that support running processes simply.
+A function that supports running processes simply.
 
 """
 
-def onearg():
-
-    """
-
-    Returns the command line arguments as a single string.
-    
-    i.e. python test.py one two three
-    
-    returns the string "one two three"
-    
-    Assumes that there is no more than one space between arguments.
-    
-    Kind of a kluge to get the command line arguments as a string.
-
-    """
-    
-    if len(sys.argv) < 2:
-        return ""
-
-    onearg = sys.argv[1]
-
-    for word in sys.argv[2:]:
-        onearg += " " + word
-        
-    return onearg
-    
 def runone(cmdline,stdin):
     """
     Arguments:

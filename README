@@ -15,4 +15,4 @@ bisection.py - Searches a range of values for one that causes a function
                
 Utility functions:
 
-runutils.py - Two simple functions that I might use to run scripts or programs
+runutils.py - A simple function that I might use to run scripts or programs
