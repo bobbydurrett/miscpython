@@ -46,7 +46,7 @@ def upload_binary_file(file_path, base_url, folder_url, ctx_auth):
             print("upload_binary_file error code: "+str(data.status_code))
             
 def checkin_file(file_path, base_url, folder_url, ctx_auth):
-    """Attempt to upload a binary file to SharePoint"""
+    """Attempt to check in a file in SharePoint"""
 
     file_name = basename(file_path)
     files_url ="{0}/_api/web/GetFileByServerRelativeUrl('{1}/{2}')/CheckIn(comment='Comment',checkintype=0)"
