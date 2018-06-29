@@ -16,3 +16,5 @@ bisection.py - Searches a range of values for one that causes a function
 Utility functions:
 
 runutils.py - A simple function that I might use to run scripts or programs
+
+uploadfile.py - Script to upload a file to Sharepoint on Office 365. Also checks in file.
