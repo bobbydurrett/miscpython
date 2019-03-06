@@ -18,3 +18,5 @@ Utility functions:
 runutils.py - A simple function that I might use to run scripts or programs
 
 uploadfile.py - Script to upload a file to Sharepoint on Office 365. Also checks in file.
+
+remotescript.py - Runs a list of Unix or Linux shell script commands on a remote server.
