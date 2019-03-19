@@ -7,6 +7,7 @@ Script to run a list of commands on a remote Unix or Linux server.
 import paramiko
 import sys
 import socket
+import os
 
 def create_shell_script(script_name,command_list):
     """
@@ -79,7 +80,7 @@ def run_shell_script(script_name,host,user,pwd):
     
     client.connect(host,username=user, password=pwd)
     
-    stdin, stdout, stderr = client.exec_command(script_name)
+    stdin, stdout, stderr = client.exec_command('./'+script_name)
     
     out=strip_newlines(stdout.readlines())  
     err=strip_newlines(stderr.readlines())
@@ -93,7 +94,20 @@ def delete_shell_script(script_name,host,username,password):
     
     """
     
-    out,err = run_shell_script('rm '+script_name,host,username,password)
+    # connect to sftp server
+    
+    transport = paramiko.Transport((host, 22))
+    transport.connect(username = username, password = password)
+    sftp = paramiko.SFTPClient.from_transport(transport)
+    
+    # copy to server
+    
+    sftp.remove(script_name)
+        
+    # close connection
+    
+    sftp.close()
+    transport.close()
     
 def run_command_list(host,username,password,command_list):
     """
@@ -128,6 +142,10 @@ def run_command_list(host,username,password,command_list):
     
     delete_shell_script(script_name,host,username,password)
     
+    # remove local script
+    
+    os.remove(script_name)
+    
     return out,err
 
 def run_command_list_as_oracle(host,username,password,command_list):
@@ -141,20 +159,27 @@ def run_command_list_as_oracle(host,username,password,command_list):
     
     return run_command_list(host,username,password,oracle_command_list)
     
-# Main program starts here
-
-if len(sys.argv) != 2:
-    print("Should have one argument - password")
-    sys.exit(-1)
+def get_remote_file(directory_path,file_name,host,username,password):
+    """
     
-password = sys.argv[1]
-
-command_list = ["pwd","ls","hostname","ps"]
-
-out,err = run_command_list_as_oracle('MYHOST','MYUSER',password,command_list)
-
-for oline in out:
-    print(oline)
+    Get a file from the remote host.
     
-print(err)
-
+    Get from remote directory but save it in the current
+    local directory.
+    
+    """
+    
+    # connect to sftp server
+    
+    transport = paramiko.Transport((host, 22))
+    transport.connect(username = username, password = password)
+    sftp = paramiko.SFTPClient.from_transport(transport)
+    
+    # copy to server
+    
+    sftp.get(directory_path+'/'+file_name, file_name)
+    
+    # close connection
+    
+    sftp.close()
+    transport.close()
