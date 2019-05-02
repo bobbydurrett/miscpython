@@ -24,3 +24,7 @@ The first two are from two edX classes that I took:
 
 * `tnsnamesparser.py` - Pulls information from a tnsnames.ora file
 
+* `dbspace.py` - Returns the size of an Oracle database and the number of non-system objects
+
+
+
