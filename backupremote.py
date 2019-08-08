@@ -18,6 +18,7 @@ start_directory = None
 backup_dir = None
 transport = None
 sftp = None
+last_file = None
 
 import paramiko
 import os
@@ -206,16 +207,25 @@ def copy_files_in_directory(top_local_directory,remote_directory):
     
     """
     
+    global last_file
+    
     local_directory = convert_to_local_subdir(top_local_directory, remote_directory)
     
     print('Backing up files in directory '+remote_directory+' to '+local_directory)
  
     os.chdir(local_directory)
     sftp.chdir(remote_directory)
+    
+    if last_file != None and os.path.isfile(last_file):
+        try:
+            os.remove(last_file)
+        except:
+            pass
 
     files = get_filenames(remote_directory)
 
     for f in files:
+        last_file = f
         # check if file exists locally
         # already backed up
         if not os.path.isfile(f):
