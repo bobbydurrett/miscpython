@@ -47,7 +47,7 @@ def connect_to_sftp_server():
         transport.connect(username = username, password = password)
         sftp = paramiko.SFTPClient.from_transport(transport)
     except:
-        write_to_log('Exception in connect_to_sftp_server')
+        logging.error('Exception in connect_to_sftp_server')
         disconnect_from_sftp_server()
         transport = paramiko.Transport((hostname, port))
         transport.connect(username = username, password = password)
@@ -117,7 +117,7 @@ def traverse_directory(remote_dir, directory_tree):
     try:
         subdirectories = get_subdirectories(remote_dir)
     except paramiko.ssh_exception.SSHException:
-        write_to_log('SSHException calling get_subdirectories on '+remote_dir+' retrying.')
+        logging.error('SSHException calling get_subdirectories on '+remote_dir+' retrying.')
         disconnect_from_sftp_server()
         connect_to_sftp_server()
         subdirectories = get_subdirectories(remote_dir)
@@ -212,7 +212,7 @@ def copy_files_in_directory(top_local_directory,remote_directory):
     
     local_directory = convert_to_local_subdir(top_local_directory, remote_directory)
     
-    write_to_log('Backing up files in directory '+remote_directory+' to '+local_directory)
+    logging.info('Backing up files in directory '+remote_directory+' to '+local_directory)
  
     os.chdir(local_directory)
     sftp.chdir(remote_directory)
@@ -230,31 +230,12 @@ def copy_files_in_directory(top_local_directory,remote_directory):
         # check if file exists locally
         # already backed up
         if not os.path.isfile(f):
-            write_to_log('Backing up '+f)
+            logging.info('Backing up '+f)
             try:
                 sftp.get(f, f)
             except PermissionError:
-                write_to_log('Skipping '+f+' due to permissions')
-                
-def setup_logging():
-    """
-    
-    Enables logging to a file so we can save messages for each backup.
-    
-    """
-
-    logging.basicConfig(filename=backup_dir+'\\backup.log',level=logging.INFO)
-    
-def write_to_log(output):
-    """
-    
-    Writes a line of output to the log.
-    
-    """
-    
-    logging.info(output)
-
-
+                logging.warning('Skipping '+f+' due to permissions')
+                    
 def backup_remote(phostname, pport, pusername, ppassword, pstart_directory, pbackup_dir):
     """
     Backs up all of the files in a remote directory to a local directory using sftp.
@@ -285,15 +266,13 @@ def backup_remote(phostname, pport, pusername, ppassword, pstart_directory, pbac
     start_directory = pstart_directory
     backup_dir = pbackup_dir
     
-    setup_logging()
-    
     # connect to sftp server
     
     connect_to_sftp_server()
     
     # Get remote directory tree as a dictionary
     
-    write_to_log('Getting the names of the remote directories')
+    logging.info('Getting the names of the remote directories')
     
     remote_directory_tree = get_directory_tree(start_directory)
     
@@ -304,37 +283,37 @@ def backup_remote(phostname, pport, pusername, ppassword, pstart_directory, pbac
     
     local_dir = backup_dir
     
-    write_to_log('Creating the local directories under '+local_dir)
+    logging.info('Creating the local directories under '+local_dir)
     
     # build out local subdirectories
     
     build_subdirectories(local_dir, directory_list)
     
-    write_to_log('Backing up each directory')
+    logging.info('Backing up each directory')
     
     for remote_dir in directory_list:
         try:
             copy_files_in_directory(local_dir,remote_dir)
         except paramiko.ssh_exception.SSHException:
-            write_to_log('SSHException calling copy_files_in_directory - first exception')
+            logging.error('SSHException calling copy_files_in_directory - first exception')
             disconnect_from_sftp_server()
             connect_to_sftp_server()
             try:
                 copy_files_in_directory(local_dir,remote_dir)
             except paramiko.ssh_exception.SSHException:
-                write_to_log('SSHException calling copy_files_in_directory - second exception')
+                logging.error('SSHException calling copy_files_in_directory - second exception')
                 disconnect_from_sftp_server()
                 connect_to_sftp_server()
                 try:
                     copy_files_in_directory(local_dir,remote_dir)
                 except paramiko.ssh_exception.SSHException:
-                    write_to_log('SSHException calling copy_files_in_directory - third exception')
+                    logging.error('SSHException calling copy_files_in_directory - third exception')
                     disconnect_from_sftp_server()
                     connect_to_sftp_server() 
                     try:
                         copy_files_in_directory(local_dir,remote_dir)
                     except paramiko.ssh_exception.SSHException:
-                        write_to_log('SSHException calling copy_files_in_directory - fourth exception - skipping directory')
+                        logging.error('SSHException calling copy_files_in_directory - fourth exception - skipping directory')
                         disconnect_from_sftp_server()
                         connect_to_sftp_server() 
      
