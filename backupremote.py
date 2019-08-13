@@ -81,8 +81,10 @@ def get_subdirectories(remote_dir):
     
     Returns a list of the subdirectories of remote_dir.
     
-    """
+    Assumes that remote_dir ends in /.
     
+    """
+       
     sftp.chdir(remote_dir)
 
     file_list = sftp.listdir_attr('.')
@@ -199,7 +201,24 @@ def get_filenames(remote_dir):
                 filenames.append(one_file.filename)
             
     return filenames
+    
+def num_file_curr_dir():
+    """
+    
+    Returns the number of non-directory files
+    in the current local directory.
+    
+    """
+    files = os.scandir()
+
+    num_files = 0
+
+    for f in files:
+        if not f.is_dir():
+            num_files += 1
         
+    return(num_files)    
+    
 def copy_files_in_directory(top_local_directory,remote_directory):
     """
     
@@ -224,6 +243,10 @@ def copy_files_in_directory(top_local_directory,remote_directory):
             pass
 
     files = get_filenames(remote_directory)
+    
+    num_remote_files = len(files)
+    
+    logging.info('Number of files in  '+remote_directory+' = '+str(num_remote_files))
 
     for f in files:
         last_file = f
@@ -235,6 +258,14 @@ def copy_files_in_directory(top_local_directory,remote_directory):
                 sftp.get(f, f)
             except PermissionError:
                 logging.warning('Skipping '+f+' due to permissions')
+                
+    num_local_files = num_file_curr_dir()
+    
+    logging.info('Number of files in  '+local_directory+' = '+str(num_local_files))
+    
+    if num_remote_files != num_local_files:
+        logging.error('Number of files in local dir does not match number in remote dir')
+    
                     
 def backup_remote(phostname, pport, pusername, ppassword, pstart_directory, pbackup_dir):
     """
