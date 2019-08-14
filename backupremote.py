@@ -258,6 +258,12 @@ def copy_files_in_directory(top_local_directory,remote_directory):
                 sftp.get(f, f)
             except PermissionError:
                 logging.warning('Skipping '+f+' due to permissions')
+                # remove empty local file
+                try:
+                    os.remove(f)
+                except:
+                    pass
+
                 
     num_local_files = num_file_curr_dir()
     
