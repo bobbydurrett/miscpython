@@ -19,6 +19,7 @@ backup_dir = None
 transport = None
 sftp = None
 last_file = None
+logger = None
 
 import paramiko
 import os
@@ -47,7 +48,7 @@ def connect_to_sftp_server():
         transport.connect(username = username, password = password)
         sftp = paramiko.SFTPClient.from_transport(transport)
     except:
-        logging.error('Exception in connect_to_sftp_server')
+        logger.error('Exception in connect_to_sftp_server')
         disconnect_from_sftp_server()
         transport = paramiko.Transport((hostname, port))
         transport.connect(username = username, password = password)
@@ -119,7 +120,7 @@ def traverse_directory(remote_dir, directory_tree):
     try:
         subdirectories = get_subdirectories(remote_dir)
     except paramiko.ssh_exception.SSHException:
-        logging.error('SSHException calling get_subdirectories on '+remote_dir+' retrying.')
+        logger.error('SSHException calling get_subdirectories on '+remote_dir+' retrying.')
         disconnect_from_sftp_server()
         connect_to_sftp_server()
         subdirectories = get_subdirectories(remote_dir)
@@ -231,7 +232,7 @@ def copy_files_in_directory(top_local_directory,remote_directory):
     
     local_directory = convert_to_local_subdir(top_local_directory, remote_directory)
     
-    logging.info('Backing up files in directory '+remote_directory+' to '+local_directory)
+    logger.info('Backing up files in directory '+remote_directory+' to '+local_directory)
  
     os.chdir(local_directory)
     sftp.chdir(remote_directory)
@@ -246,18 +247,18 @@ def copy_files_in_directory(top_local_directory,remote_directory):
     
     num_remote_files = len(files)
     
-    logging.info('Number of files in  '+remote_directory+' = '+str(num_remote_files))
+    logger.info('Number of files in  '+remote_directory+' = '+str(num_remote_files))
 
     for f in files:
         last_file = f
         # check if file exists locally
         # already backed up
         if not os.path.isfile(f):
-            logging.info('Backing up '+f)
+            logger.info('Backing up '+f)
             try:
                 sftp.get(f, f)
             except PermissionError:
-                logging.warning('Skipping '+f+' due to permissions')
+                logger.warning('Skipping '+f+' due to permissions')
                 # remove empty local file
                 try:
                     os.remove(f)
@@ -267,10 +268,10 @@ def copy_files_in_directory(top_local_directory,remote_directory):
                 
     num_local_files = num_file_curr_dir()
     
-    logging.info('Number of files in  '+local_directory+' = '+str(num_local_files))
+    logger.info('Number of files in  '+local_directory+' = '+str(num_local_files))
     
     if num_remote_files != num_local_files:
-        logging.error('Number of files in local dir does not match number in remote dir')
+        logger.error('Number of files in local dir does not match number in remote dir')
     
                     
 def backup_remote(phostname, pport, pusername, ppassword, pstart_directory, pbackup_dir):
@@ -295,6 +296,9 @@ def backup_remote(phostname, pport, pusername, ppassword, pstart_directory, pbac
     global backup_dir
     global transport
     global sftp
+    global logger
+    
+    logger = logging.getLogger(__name__)
     
     hostname = phostname
     port = pport
@@ -309,7 +313,7 @@ def backup_remote(phostname, pport, pusername, ppassword, pstart_directory, pbac
     
     # Get remote directory tree as a dictionary
     
-    logging.info('Getting the names of the remote directories')
+    logger.info('Getting the names of the remote directories')
     
     remote_directory_tree = get_directory_tree(start_directory)
     
@@ -320,37 +324,37 @@ def backup_remote(phostname, pport, pusername, ppassword, pstart_directory, pbac
     
     local_dir = backup_dir
     
-    logging.info('Creating the local directories under '+local_dir)
+    logger.info('Creating the local directories under '+local_dir)
     
     # build out local subdirectories
     
     build_subdirectories(local_dir, directory_list)
     
-    logging.info('Backing up each directory')
+    logger.info('Backing up each directory')
     
     for remote_dir in directory_list:
         try:
             copy_files_in_directory(local_dir,remote_dir)
         except paramiko.ssh_exception.SSHException:
-            logging.error('SSHException calling copy_files_in_directory - first exception')
+            logger.error('SSHException calling copy_files_in_directory - first exception')
             disconnect_from_sftp_server()
             connect_to_sftp_server()
             try:
                 copy_files_in_directory(local_dir,remote_dir)
             except paramiko.ssh_exception.SSHException:
-                logging.error('SSHException calling copy_files_in_directory - second exception')
+                logger.error('SSHException calling copy_files_in_directory - second exception')
                 disconnect_from_sftp_server()
                 connect_to_sftp_server()
                 try:
                     copy_files_in_directory(local_dir,remote_dir)
                 except paramiko.ssh_exception.SSHException:
-                    logging.error('SSHException calling copy_files_in_directory - third exception')
+                    logger.error('SSHException calling copy_files_in_directory - third exception')
                     disconnect_from_sftp_server()
                     connect_to_sftp_server() 
                     try:
                         copy_files_in_directory(local_dir,remote_dir)
                     except paramiko.ssh_exception.SSHException:
-                        logging.error('SSHException calling copy_files_in_directory - fourth exception - skipping directory')
+                        logger.error('SSHException calling copy_files_in_directory - fourth exception - skipping directory')
                         disconnect_from_sftp_server()
                         connect_to_sftp_server() 
      
