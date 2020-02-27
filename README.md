@@ -31,3 +31,5 @@ The first two are from two edX classes that I took:
 * `elapsedtoseconds.py` - Convert sqlplus elapsed time to seconds
 
 * `alternating.py` - Split a list of lines into two lists
+
+* `gethostcounts.py` - Get count of connections from external hosts from listener log.
